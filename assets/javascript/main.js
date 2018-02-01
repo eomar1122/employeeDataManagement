@@ -16,6 +16,8 @@ var employeeName = "";
 var role = "";
 var startDate = "";
 var monthlyRate = "";
+var monthWorked = 0;
+var totalBill = 0;
 
 
 var database = firebase.database();
@@ -39,22 +41,21 @@ $("#submit").on("click", function(){
 		monthlyRate: monthlyRate,
 		dateAdded: firebase.database.ServerValue.TIMESTAMP
 
-
-// var monthWorked = ;
-//     totalBill = ;
-
-var generateRow = $(“<tr>“);
-    generateRow.html(“<td>” + employeeName + “</td>“+”<td>” + role + “</td>“+”<td>” + startDate + “</td>“+”<td>” + monthWorked + “</td>“+”<td>” + monthlyRate + “</td>“+”<td>” + totalBill + “</td>“);
-    
-
-    $(“#add-employee”).append(generateRow);
+	});
 
 
 	database.ref().on("child_added", function(childSnapshot){
 
 		console.log(childSnapshot.val().employeeName)
 
-	})
+	});
+
+
+	var generateRow = $("<tr>");
+	generateRow.html("<td>" + employeeName + "</td>"+"<td>" + role + "</td>"+"<td>" + startDate + "</td>"+"<td>" + monthWorked + "</td>"+"<td>" + monthlyRate + "</td>"+"<td>" + totalBill + "</td>");
+	
+
+	$("#add-employee").append(generateRow);
 
 	//console.log(employeeName)
 
