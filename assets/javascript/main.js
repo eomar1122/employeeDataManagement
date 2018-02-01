@@ -5,7 +5,7 @@
     authDomain: "datemanagement.firebaseapp.com",
     databaseURL: "https://datemanagement.firebaseio.com",
     projectId: "datemanagement",
-    storageBucket: "",
+    storageBucket: "datemanagement.appspot.com",
     messagingSenderId: "159952801859"
   };
   firebase.initializeApp(config);
@@ -17,25 +17,42 @@ var role = "";
 var startDate = "";
 var monthlyRate = "";
 
+
 var database = firebase.database();
 
 
 
 $("#submit").on("click", function(){
 
+	event.preventDefault();
+
 	employeeName = $("#employee-name").val().trim();
 	role = $("#role").val().trim();
 	startDate = $("#start-date").val().trim();
 	monthlyRate = $("#monthly-rate").val().trim();
 
+
 	database.ref().push({
 		employeeName: employeeName,
 		role: role, 
 		startDate: startDate,
-		monthlyRate: monthlyRate
+		monthlyRate: monthlyRate,
+		dateAdded: firebase.database.ServerValue.TIMESTAMP
+
+
+var generateRow = $("<tr>")
+
+	generateRow.html()
+
 	})
 
-	console.log(employeeName)
+	database.ref().on("child_added", function(childSnapshot){
+
+		console.log(childSnapshot.val().employeeName)
+
+	})
+
+	//console.log(employeeName)
 
 
 
