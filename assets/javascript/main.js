@@ -40,11 +40,15 @@ $("#submit").on("click", function(){
 		dateAdded: firebase.database.ServerValue.TIMESTAMP
 
 
-var generateRow = $("<tr>")
+// var monthWorked = ;
+//     totalBill = ;
 
-	generateRow.html()
+var generateRow = $(“<tr>“);
+    generateRow.html(“<td>” + employeeName + “</td>“+”<td>” + role + “</td>“+”<td>” + startDate + “</td>“+”<td>” + monthWorked + “</td>“+”<td>” + monthlyRate + “</td>“+”<td>” + totalBill + “</td>“);
+    
 
-	})
+    $(“#add-employee”).append(generateRow);
+
 
 	database.ref().on("child_added", function(childSnapshot){
 
