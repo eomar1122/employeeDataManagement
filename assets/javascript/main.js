@@ -1,64 +1,83 @@
 
 // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCznoxkdOZFy0YB9YgJgMHVo1NxZbe8FvU",
-    authDomain: "datemanagement.firebaseapp.com",
-    databaseURL: "https://datemanagement.firebaseio.com",
-    projectId: "datemanagement",
-    storageBucket: "datemanagement.appspot.com",
-    messagingSenderId: "159952801859"
-  };
-  firebase.initializeApp(config);
+var config = {
+	apiKey: "AIzaSyC9U82rx-jGYvDVrXF8xMf5Is--cz6yfbg",
+	authDomain: "my-awesome-project-55068.firebaseapp.com",
+	databaseURL: "https://my-awesome-project-55068.firebaseio.com",
+	storageBucket: "my-awesome-project-55068.appspot.com"
+};
 
-
-
-var employeeName = "";
-var role = "";
-var startDate = "";
-var monthlyRate = "";
-var monthWorked = 0;
-var totalBill = 0;
-
+firebase.initializeApp(config);
 
 var database = firebase.database();
 
-
-
-$("#submit").on("click", function(){
-
+// 2. Button for adding Employees
+$("#add-employee-btn").on("click", function (event) {
 	event.preventDefault();
 
-	employeeName = $("#employee-name").val().trim();
-	role = $("#role").val().trim();
-	startDate = $("#start-date").val().trim();
-	monthlyRate = $("#monthly-rate").val().trim();
+	// Grabs user input
+	var empName = $("#employee-name-input").val().trim();
+	var empRole = $("#role-input").val().trim();
+	var empStart = moment($("#start-input").val().trim(), "DD/MM/YY").format("X");
+	var empRate = $("#rate-input").val().trim();
 
+	// Creates local "temporary" object for holding employee data
+	var newEmp = {
+		name: empName,
+		role: empRole,
+		start: empStart,
+		rate: empRate
+	};
 
-	database.ref().push({
-		employeeName: employeeName,
-		role: role, 
-		startDate: startDate,
-		monthlyRate: monthlyRate,
-		dateAdded: firebase.database.ServerValue.TIMESTAMP
+	// Uploads employee data to the database
+	database.ref().push(newEmp);
 
-	});
+	// Logs everything to console
+	console.log(newEmp.name);
+	console.log(newEmp.role);
+	console.log(newEmp.start);
+	console.log(newEmp.rate);
 
+	// Alert
+	alert("Employee successfully added");
 
-	database.ref().on("child_added", function(childSnapshot){
+	// Clears all of the text-boxes
+	$("#employee-name-input").val("");
+	$("#role-input").val("");
+	$("#start-input").val("");
+	$("#rate-input").val("");
+});
 
-		console.log(childSnapshot.val().employeeName)
+// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+database.ref().on("child_added", function (childSnapshot, prevChildKey) {
 
-	});
+	console.log(childSnapshot.val());
 
+	// Store everything into a variable.
+	var empName = childSnapshot.val().name;
+	var empRole = childSnapshot.val().role;
+	var empStart = childSnapshot.val().start;
+	var empRate = childSnapshot.val().rate;
 
-	var generateRow = $("<tr>");
-	generateRow.html("<td>" + employeeName + "</td>"+"<td>" + role + "</td>"+"<td>" + startDate + "</td>"+"<td>" + monthWorked + "</td>"+"<td>" + monthlyRate + "</td>"+"<td>" + totalBill + "</td>");
-	
+	// Employee Info
+	console.log(empName);
+	console.log(empRole);
+	console.log(empStart);
+	console.log(empRate);
 
-	$("#add-employee").append(generateRow);
+	// Prettify the employee start
+	var empStartPretty = moment.unix(empStart).format("MM/DD/YY");
 
-	//console.log(employeeName)
+	// Calculate the months worked using hardcore math
+	// To calculate the months worked
+	var empMonths = moment().diff(moment.unix(empStart, "X"), "months");
+	console.log(empMonths);
 
+	// Calculate the total billed rate
+	var empBilled = empMonths * empRate;
+	console.log(empBilled);
 
-
-})
+	// Add each train's data into the table
+	$("#employee-table > tbody").append("<tr><td>" + empName + "</td><td>" + empRole + "</td><td>" +
+		empStartPretty + "</td><td>" + empMonths + "</td><td>" + empRate + "</td><td>" + empBilled + "</td></tr>");
+});
